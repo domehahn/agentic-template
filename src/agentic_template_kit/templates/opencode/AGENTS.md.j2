@@ -1,0 +1,18 @@
+# OpenCode Agent Instructions
+
+Project: {{ project_name }}
+
+Use OpenCode as a terminal-first coding agent.
+
+## Behavior
+
+- Inspect files with targeted search before editing.
+- Make actual file changes when requested.
+- Keep changes small and reviewable.
+- Run relevant tests/checks where practical.
+- Do not commit or push unless explicitly asked.
+- Do not read or expose secrets.
+
+## Local model guidance
+
+When using Ollama or another local model, keep tasks scoped and validate frequently.

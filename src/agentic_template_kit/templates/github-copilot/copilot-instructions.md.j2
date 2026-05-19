@@ -1,0 +1,28 @@
+# GitHub Copilot Repository Instructions
+
+## Agentic behavior
+
+When generating or editing code in this repository:
+
+- Prefer small, reviewable changes.
+- Follow existing project conventions.
+- Do not invent commands, scripts, endpoints, or files.
+- Avoid reading or suggesting changes to secrets, `.env`, private keys, credentials, dumps, or production logs.
+- Add or update tests when behavior changes.
+- Validate instructions against repository files.
+
+## Project context
+
+Project: {{ project_name }}
+Owner team: {{ owner_team }}
+Detected language: {{ language }}
+Detected package manager: {{ package_manager or "unknown" }}
+
+## Review expectations
+
+For any generated change, include:
+
+- What changed
+- Why it changed
+- How to validate it
+- Known limitations or risks

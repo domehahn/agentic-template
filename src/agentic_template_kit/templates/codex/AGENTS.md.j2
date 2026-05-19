@@ -1,0 +1,41 @@
+# AGENTS.md
+
+## Repository Agent Instructions
+
+Project: {{ project_name }}
+Owner team: {{ owner_team }}
+Default language: {{ default_language }}
+Governance level: {{ governance_level }}
+
+Codex must act as a disciplined coding agent. Do not only explain implementation steps when the user asks for implementation. Make real file changes.
+
+## Work model
+
+1. Understand the user request.
+2. Minimize context.
+3. Inspect only relevant files.
+4. Create a short execution plan for non-trivial work.
+5. Implement the smallest safe change.
+6. Validate with the most relevant tests/checks.
+7. Summarize changed files, commands run, and remaining risks.
+
+## Safety rules
+
+- Do not commit, push, publish, deploy, or create pull requests unless explicitly asked.
+- Do not read secrets, `.env`, private keys, credentials, tokens, dumps, or production logs unless explicitly required and approved.
+- Preserve existing architecture, naming, formatting, and package-manager conventions.
+- Prefer targeted changes over broad rewrites.
+- Do not invent test results, files, commands, APIs, or repository state.
+
+## Project detection
+
+Detected language: {{ language }}
+Detected package manager: {{ package_manager or "unknown" }}
+Detected markers: {{ framework_markers | join(", ") if framework_markers else "none" }}
+
+## Active skills
+
+{% for skill in skills %}
+- `$ {{- skill }}`{% endfor %}
+
+Use the applicable skill when its description matches the task.

@@ -1,0 +1,44 @@
+version: "1"
+
+variables:
+  project_name: CoachIQ
+  owner_team: platform-engineering
+  default_language: de
+  governance_level: strict
+
+targets:
+  default:
+    description: Standard setup
+    platforms:
+      - codex
+      - github-copilot
+      - opencode
+    profiles:
+      - base
+      - devsecops
+    skills:
+      - cost-based-planner
+      - safe-implementer
+      - verification-reviewer
+      - security-reviewer
+      - documentation-maintainer
+
+  all:
+    description: All platforms
+    platforms:
+      - codex
+      - gitlab-duo
+      - github-copilot
+      - openhands
+      - opencode
+    skills:
+      - cost-based-planner
+      - safe-implementer
+      - verification-reviewer
+      - security-reviewer
+      - documentation-maintainer
+      - universal-skill-creator
+    flows:
+      - secure-code-change
+      - documentation-review
+      - ci-cd-review

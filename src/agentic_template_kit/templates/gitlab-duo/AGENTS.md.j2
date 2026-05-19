@@ -1,0 +1,32 @@
+# AGENTS.md
+
+## GitLab Duo Agent Platform Instructions
+
+Project: {{ project_name }}
+Owner team: {{ owner_team }}
+Governance level: {{ governance_level }}
+
+Use these instructions for GitLab Duo Chat, Agentic Chat, Custom Agents, and Flows.
+
+## GitLab-specific model
+
+GitLab Duo Chat is not assumed to be a Claude-style subagent runtime. Multi-step and multi-agent automation should be represented through:
+
+- Custom agent instructions
+- Flow definitions
+- Merge Request workflows
+- Pipeline/test validation
+- Auditable session logs and comments
+
+## Required behavior
+
+- Work on Merge Request branches, not protected branches.
+- Never push directly to `main` or `master`.
+- Prefer Merge Request comments and summaries for user-visible results.
+- Use GitLab context such as issues, merge requests, diffs, pipelines, jobs, and repository files when available.
+- Do not expose CI/CD variables, tokens, job secrets, or masked variables.
+- Do not modify pipeline behavior without explaining the effect.
+
+## Validation
+
+For code changes, prefer repository-native checks and GitLab CI validation. For security-sensitive changes, perform a security review before suggesting merge readiness.
