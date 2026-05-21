@@ -5,38 +5,30 @@ from pathlib import Path
 
 from agentic_template_kit.renderer import TEMPLATE_ROOT
 
-
 EXPECTED_TEMPLATES = [
     # Shared
     "shared/SKILL.md.j2",
     "shared/AGENTS.index.md.j2",
     "shared/platform-reference.md.j2",
-
     # Codex
     "codex/AGENTS.md.j2",
-
     # GitLab Duo
     "gitlab-duo/AGENTS.md.j2",
     "gitlab-duo/chat-rules.md.j2",
     "gitlab-duo/flows/README.md.j2",
     "gitlab-duo/flows/flow.yaml.j2",
-
     # Claude Code
     "claude/CLAUDE.md.j2",
     "claude/agent.md.j2",
-
     # GitHub Copilot
     "github-copilot/copilot-instructions.md.j2",
     "github-copilot/prompt.prompt.md.j2",
-
     # OpenHands
     "openhands/AGENTS.md.j2",
     "openhands/instructions.md.j2",
-
     # OpenCode
     "opencode/AGENTS.md.j2",
     "opencode/instructions.md.j2",
-
     # Ollama
     "ollama/Modelfile.j2",
     "ollama/README.md.j2",
@@ -45,9 +37,7 @@ EXPECTED_TEMPLATES = [
 
 def test_all_referenced_templates_exist() -> None:
     missing = [
-        template
-        for template in EXPECTED_TEMPLATES
-        if not (TEMPLATE_ROOT / template).exists()
+        template for template in EXPECTED_TEMPLATES if not (TEMPLATE_ROOT / template).exists()
     ]
 
     assert missing == []

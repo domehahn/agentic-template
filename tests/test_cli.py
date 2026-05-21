@@ -95,9 +95,7 @@ def test_gitlab_skill_enables_slash_command(tmp_path: Path) -> None:
     )
     assert bake_result.exit_code == 0, bake_result.output
 
-    text = (tmp_path / "skills" / "security-reviewer" / "SKILL.md").read_text(
-        encoding="utf-8"
-    )
+    text = (tmp_path / "skills" / "security-reviewer" / "SKILL.md").read_text(encoding="utf-8")
 
     assert "slash-command: enabled" in text
 
@@ -423,27 +421,21 @@ def test_multi_platform_bake_writes_all_expected_outputs(tmp_path: Path) -> None
         # Codex
         ".agents/skills/security-reviewer/SKILL.md",
         ".agents/skills/safe-implementer/SKILL.md",
-
         # GitLab Duo
         "skills/security-reviewer/SKILL.md",
         "skills/safe-implementer/SKILL.md",
         ".gitlab/duo/chat-rules.md",
         ".gitlab/duo/flows/secure-code-change.yaml",
-
         # GitHub Copilot
         ".github/copilot-instructions.md",
         ".github/prompts/security-reviewer.prompt.md",
-
         # Claude
         ".agentic/claude/AGENTS.md",
         ".claude/skills/security-reviewer/SKILL.md",
-
         # OpenCode
         ".opencode/instructions.md",
-
         # OpenHands
         ".openhands/instructions.md",
-
         # Ollama
         ".ollama/Modelfile",
         ".ollama/README.md",
@@ -451,6 +443,7 @@ def test_multi_platform_bake_writes_all_expected_outputs(tmp_path: Path) -> None
 
     for expected_path in expected_paths:
         assert (tmp_path / expected_path).exists(), expected_path
+
 
 def test_claude_bake_writes_skills_and_subagents(tmp_path: Path) -> None:
     init_result = runner.invoke(
@@ -514,9 +507,7 @@ def test_claude_subagent_preloads_skills(tmp_path: Path) -> None:
         ],
     )
 
-    text = (tmp_path / ".claude" / "agents" / "devsecops-reviewer.md").read_text(
-        encoding="utf-8"
-    )
+    text = (tmp_path / ".claude" / "agents" / "devsecops-reviewer.md").read_text(encoding="utf-8")
 
     assert "skills:" in text
     assert "security-reviewer" in text
@@ -689,6 +680,7 @@ def test_plan_accepts_detailed_diff_flag(tmp_path: Path) -> None:
     )
     assert plan_result.exit_code == 0, plan_result.output
     assert "Diff:" in plan_result.output
+
 
 MARKDOWN_PATHS = [
     Path("README.md"),

@@ -204,7 +204,11 @@ When invoked:
         "model": "sonnet",
         "permissionMode": "plan",
         "maxTurns": 8,
-        "skills": ["release-readiness-reviewer", "observability-reviewer", "documentation-maintainer"],
+        "skills": [
+            "release-readiness-reviewer",
+            "observability-reviewer",
+            "documentation-maintainer",
+        ],
         "prompt": """You are a release readiness reviewer.
 
 When invoked:
@@ -220,7 +224,11 @@ When invoked:
         "model": "sonnet",
         "permissionMode": "default",
         "maxTurns": 12,
-        "skills": ["incident-postmortem-assistant", "observability-reviewer", "documentation-maintainer"],
+        "skills": [
+            "incident-postmortem-assistant",
+            "observability-reviewer",
+            "documentation-maintainer",
+        ],
         "prompt": """You are an incident and postmortem assistant.
 
 When invoked:
@@ -231,6 +239,7 @@ When invoked:
 5. Return a postmortem-ready summary with action items.""",
     },
 ]
+
 
 def skill_title(skill: str) -> str:
     return skill.replace("-", " ").title()

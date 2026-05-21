@@ -148,7 +148,11 @@ def render_files(config: BakeConfig, target: TargetConfig) -> list[RenderedFile]
             )
 
     if "github-copilot" in target.platforms:
-        add("github-copilot", "github-copilot/copilot-instructions.md.j2", ".github/copilot-instructions.md")
+        add(
+            "github-copilot",
+            "github-copilot/copilot-instructions.md.j2",
+            ".github/copilot-instructions.md",
+        )
         add(
             "github-copilot",
             "shared/platform-reference.md.j2",

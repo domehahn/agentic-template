@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import difflib
 from pathlib import Path
-from typing import Optional
 
 import typer
 from rich.console import Console
@@ -40,16 +39,22 @@ def _unified_diff(old: str, new: str, path: str, *, max_lines: int | None = None
 @app.command()
 def init(
     target: Path = typer.Option(Path("."), "--target", "-t", help="Target repository path."),
-    platform: Optional[str] = typer.Option(
+    platform: str | None = typer.Option(
         None,
         "--platform",
         help='Comma-separated platforms, e.g. "gitlab-duo,codex,github-copilot".',
     ),
-    preset: Optional[str] = typer.Option(None, "--preset", help="Preset: minimal, gitlab, enterprise, local-ai, all."),
-    project_name: Optional[str] = typer.Option(None, "--project-name", help="Project name used in rendered templates."),
+    preset: str | None = typer.Option(
+        None, "--preset", help="Preset: minimal, gitlab, enterprise, local-ai, all."
+    ),
+    project_name: str | None = typer.Option(
+        None, "--project-name", help="Project name used in rendered templates."
+    ),
     owner_team: str = typer.Option("platform-engineering", "--owner-team", help="Owning team."),
     language: str = typer.Option("de", "--language", help="Default documentation language."),
-    governance_level: str = typer.Option("standard", "--governance-level", help="relaxed, standard, strict."),
+    governance_level: str = typer.Option(
+        "standard", "--governance-level", help="relaxed, standard, strict."
+    ),
     force: bool = typer.Option(False, "--force", help="Overwrite existing agentic.bake.yaml."),
 ) -> None:
     target = target.resolve()
@@ -76,7 +81,9 @@ def init(
 
 
 @app.command("list-targets")
-def list_targets(target: Path = typer.Option(Path("."), "--target", "-t", help="Target repository path.")) -> None:
+def list_targets(
+    target: Path = typer.Option(Path("."), "--target", "-t", help="Target repository path."),
+) -> None:
     config = load_bake_file(target / "agentic.bake.yaml")
     table = Table(title="Agentic Bake Targets")
     table.add_column("Target")
@@ -205,7 +212,9 @@ def bake(
 
 
 @app.command()
-def validate(target: Path = typer.Option(Path("."), "--target", "-t", help="Target repository path.")) -> None:
+def validate(
+    target: Path = typer.Option(Path("."), "--target", "-t", help="Target repository path."),
+) -> None:
     errors = validate_project(target.resolve())
     if errors:
         for error in errors:

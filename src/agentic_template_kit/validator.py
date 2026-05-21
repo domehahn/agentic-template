@@ -51,7 +51,9 @@ def validate_project(target: Path) -> list[str]:
                 forbidden_top_level = ["name:", "description:", "product_group:"]
                 for forbidden in forbidden_top_level:
                     if text.startswith(forbidden):
-                        errors.append(f"GitLab custom flow contains forbidden top-level field {forbidden}: {flow_file}")
+                        errors.append(
+                            f"GitLab custom flow contains forbidden top-level field {forbidden}: {flow_file}"
+                        )
                 if "workspace_agent_skills" not in text:
                     errors.append(f"Flow does not pass workspace_agent_skills: {flow_file}")
                 if "user_rule" not in text:
