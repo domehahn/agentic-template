@@ -5,7 +5,7 @@ The Claude Code adapter generates both skills and subagents.
 ## Generated structure
 
 ```text
-CLAUDE.md
+.agentic/claude/AGENTS.md
 .claude/
 ├── skills/
 │   └── <skill-name>/
@@ -71,7 +71,7 @@ Use the test-runner subagent to run relevant tests and summarize failures.
 When the `claude` platform is enabled, the generator creates:
 
 ```text
-CLAUDE.md
+.agentic/claude/AGENTS.md
 .claude/skills/<skill-name>/SKILL.md
 .claude/agents/<subagent-name>.md
 ```

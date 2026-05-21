@@ -9,6 +9,8 @@ from agentic_template_kit.renderer import TEMPLATE_ROOT
 EXPECTED_TEMPLATES = [
     # Shared
     "shared/SKILL.md.j2",
+    "shared/AGENTS.index.md.j2",
+    "shared/platform-reference.md.j2",
 
     # Codex
     "codex/AGENTS.md.j2",
@@ -21,6 +23,7 @@ EXPECTED_TEMPLATES = [
 
     # Claude Code
     "claude/CLAUDE.md.j2",
+    "claude/agent.md.j2",
 
     # GitHub Copilot
     "github-copilot/copilot-instructions.md.j2",
@@ -85,12 +88,15 @@ def test_built_wheel_contains_templates_when_dist_exists() -> None:
 
     expected = {
         "agentic_template_kit/templates/shared/SKILL.md.j2",
+        "agentic_template_kit/templates/shared/AGENTS.index.md.j2",
+        "agentic_template_kit/templates/shared/platform-reference.md.j2",
         "agentic_template_kit/templates/codex/AGENTS.md.j2",
         "agentic_template_kit/templates/gitlab-duo/AGENTS.md.j2",
         "agentic_template_kit/templates/gitlab-duo/chat-rules.md.j2",
         "agentic_template_kit/templates/gitlab-duo/flows/README.md.j2",
         "agentic_template_kit/templates/gitlab-duo/flows/flow.yaml.j2",
         "agentic_template_kit/templates/claude/CLAUDE.md.j2",
+        "agentic_template_kit/templates/claude/agent.md.j2",
         "agentic_template_kit/templates/github-copilot/copilot-instructions.md.j2",
         "agentic_template_kit/templates/github-copilot/prompt.prompt.md.j2",
         "agentic_template_kit/templates/openhands/AGENTS.md.j2",

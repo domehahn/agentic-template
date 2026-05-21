@@ -67,6 +67,7 @@ def render_files(config: BakeConfig, target: TargetConfig) -> list[RenderedFile]
     }
 
     files: list[RenderedFile] = []
+    platform_docs: list[dict[str, str]] = []
 
     def add(platform: str, template: str, destination: str, extra: dict | None = None) -> None:
         ctx = context if extra is None else {**context, **extra}
@@ -80,7 +81,14 @@ def render_files(config: BakeConfig, target: TargetConfig) -> list[RenderedFile]
         )
 
     if "codex" in target.platforms:
-        add("codex", "codex/AGENTS.md.j2", "AGENTS.md")
+        add("codex", "codex/AGENTS.md.j2", ".agentic/codex/AGENTS.md")
+        platform_docs.append(
+            {
+                "platform": "codex",
+                "path": ".agentic/codex/AGENTS.md",
+                "description": "Codex instructions and skill routing",
+            }
+        )
         for skill in skills:
             add(
                 "codex",
@@ -90,7 +98,14 @@ def render_files(config: BakeConfig, target: TargetConfig) -> list[RenderedFile]
             )
 
     if "gitlab-duo" in target.platforms:
-        add("gitlab-duo", "gitlab-duo/AGENTS.md.j2", "AGENTS.md")
+        add("gitlab-duo", "gitlab-duo/AGENTS.md.j2", ".agentic/gitlab-duo/AGENTS.md")
+        platform_docs.append(
+            {
+                "platform": "gitlab-duo",
+                "path": ".agentic/gitlab-duo/AGENTS.md",
+                "description": "GitLab Duo instructions, skills, and flow context requirements",
+            }
+        )
         add("gitlab-duo", "gitlab-duo/chat-rules.md.j2", ".gitlab/duo/chat-rules.md")
         for skill in skills:
             add(
@@ -109,7 +124,14 @@ def render_files(config: BakeConfig, target: TargetConfig) -> list[RenderedFile]
             )
 
     if "claude" in target.platforms:
-        add("claude", "claude/CLAUDE.md.j2", "CLAUDE.md")
+        add("claude", "claude/CLAUDE.md.j2", ".agentic/claude/AGENTS.md")
+        platform_docs.append(
+            {
+                "platform": "claude",
+                "path": ".agentic/claude/AGENTS.md",
+                "description": "Claude Code integration, skills, and subagent routing",
+            }
+        )
         for skill in skills:
             add(
                 "claude",
@@ -127,6 +149,23 @@ def render_files(config: BakeConfig, target: TargetConfig) -> list[RenderedFile]
 
     if "github-copilot" in target.platforms:
         add("github-copilot", "github-copilot/copilot-instructions.md.j2", ".github/copilot-instructions.md")
+        add(
+            "github-copilot",
+            "shared/platform-reference.md.j2",
+            ".agentic/github-copilot/AGENTS.md",
+            {
+                "platform_label": "GitHub Copilot",
+                "target_file": ".github/copilot-instructions.md",
+                "target_description": "Repository-level Copilot instructions",
+            },
+        )
+        platform_docs.append(
+            {
+                "platform": "github-copilot",
+                "path": ".agentic/github-copilot/AGENTS.md",
+                "description": "Pointer to GitHub Copilot repository instructions and prompts",
+            }
+        )
         for skill in skills:
             add(
                 "github-copilot",
@@ -136,16 +175,47 @@ def render_files(config: BakeConfig, target: TargetConfig) -> list[RenderedFile]
             )
 
     if "openhands" in target.platforms:
-        add("openhands", "openhands/AGENTS.md.j2", "AGENTS.md")
+        add("openhands", "openhands/AGENTS.md.j2", ".agentic/openhands/AGENTS.md")
+        platform_docs.append(
+            {
+                "platform": "openhands",
+                "path": ".agentic/openhands/AGENTS.md",
+                "description": "OpenHands instructions and capability overview",
+            }
+        )
         add("openhands", "openhands/instructions.md.j2", ".openhands/instructions.md")
 
     if "opencode" in target.platforms:
-        add("opencode", "opencode/AGENTS.md.j2", "AGENTS.md")
+        add("opencode", "opencode/AGENTS.md.j2", ".agentic/opencode/AGENTS.md")
+        platform_docs.append(
+            {
+                "platform": "opencode",
+                "path": ".agentic/opencode/AGENTS.md",
+                "description": "OpenCode instructions and capability overview",
+            }
+        )
         add("opencode", "opencode/instructions.md.j2", ".opencode/instructions.md")
 
     if "ollama" in target.platforms:
         add("ollama", "ollama/Modelfile.j2", ".ollama/Modelfile")
         add("ollama", "ollama/README.md.j2", ".ollama/README.md")
+        add(
+            "ollama",
+            "shared/platform-reference.md.j2",
+            ".agentic/ollama/AGENTS.md",
+            {
+                "platform_label": "Ollama",
+                "target_file": ".ollama/README.md",
+                "target_description": "Local model configuration and usage notes",
+            },
+        )
+        platform_docs.append(
+            {
+                "platform": "ollama",
+                "path": ".agentic/ollama/AGENTS.md",
+                "description": "Pointer to Ollama model and runtime configuration",
+            }
+        )
 
     if "generic" in target.platforms:
         for skill in skills:
@@ -155,5 +225,8 @@ def render_files(config: BakeConfig, target: TargetConfig) -> list[RenderedFile]
                 f".agentic/skills/{skill['name']}/SKILL.md",
                 {"skill": skill, "invocation_prefix": "$", "slash_command": False},
             )
+
+    if platform_docs:
+        add("shared", "shared/AGENTS.index.md.j2", "AGENTS.md", {"platform_docs": platform_docs})
 
     return files

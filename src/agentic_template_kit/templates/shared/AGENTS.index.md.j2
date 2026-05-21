@@ -1,0 +1,18 @@
+# AGENTS.md
+
+## Agent Platform Index
+
+Project: {{ variables.project_name }}  
+Owner team: {{ variables.owner_team }}  
+Governance level: {{ variables.governance_level }}
+
+This file is an index for platform-specific agent instructions generated for this repository.
+
+{% for doc in platform_docs %}
+- `{{ doc.platform }}`: `{{ doc.path }}` — {{ doc.description }}
+{% endfor %}
+
+## Notes
+
+- This index is conditional and only lists platforms configured in `agentic.bake.yaml`.
+- Platform-specific skills, prompts, and flow files stay in their native locations.

@@ -54,3 +54,15 @@ Aliases:
 ```bash
 agentic-template init --target . --platform "gitlab-duo,codex,github-copilot"
 ```
+
+## Init defaults
+
+If neither `--platform` nor `--preset` is provided, `init` configures all supported runtime platforms:
+
+- `codex`
+- `github-copilot`
+- `claude`
+- `gitlab-duo`
+- `opencode`
+- `openhands`
+- `ollama`

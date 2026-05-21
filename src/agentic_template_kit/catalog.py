@@ -232,7 +232,6 @@ When invoked:
     },
 ]
 
-
 def skill_title(skill: str) -> str:
     return skill.replace("-", " ").title()
 

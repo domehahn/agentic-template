@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 from pathlib import Path
+from typing import Any
 
 import yaml
 
@@ -36,3 +37,14 @@ def load_lockfile(target: Path) -> dict:
     if not path.exists():
         return {}
     return yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+
+
+def managed_files_by_path(lockfile: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    managed_files = lockfile.get("managed_files", [])
+    result: dict[str, dict[str, Any]] = {}
+    for item in managed_files:
+        path = str(item.get("path", "")).strip()
+        if not path:
+            continue
+        result[path] = item
+    return result

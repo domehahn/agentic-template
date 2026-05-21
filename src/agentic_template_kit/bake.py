@@ -106,7 +106,15 @@ def build_initial_config(
             raise ValueError(f"Unsupported preset: {preset}")
 
     if not platforms:
-        platforms = ["codex", "github-copilot"]
+        platforms = [
+            "codex",
+            "github-copilot",
+            "claude",
+            "gitlab-duo",
+            "opencode",
+            "openhands",
+            "ollama",
+        ]
 
     variables = {
         "project_name": project_name,

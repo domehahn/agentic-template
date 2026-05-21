@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import difflib
 from pathlib import Path
 from typing import Optional
 
@@ -8,13 +9,32 @@ from rich.console import Console
 from rich.table import Table
 
 from .bake import build_initial_config, dump_bake_file, load_bake_file, resolve_target
-from .lockfile import write_lockfile
+from .lockfile import load_lockfile, managed_files_by_path, sha256_text, write_lockfile
 from .models import parse_platforms
 from .renderer import render_files
 from .validator import validate_project
 
 app = typer.Typer(help="Generate agentic DevSecOps SDLC templates for multiple agent platforms.")
 console = Console()
+
+MAX_DIFF_LINES_PER_FILE = 120
+
+
+def _unified_diff(old: str, new: str, path: str, *, max_lines: int | None = None) -> str:
+    diff_lines = list(
+        difflib.unified_diff(
+            old.splitlines(),
+            new.splitlines(),
+            fromfile=f"a/{path}",
+            tofile=f"b/{path}",
+            lineterm="",
+        )
+    )
+    if max_lines is not None and len(diff_lines) > max_lines:
+        trimmed = diff_lines[:max_lines]
+        trimmed.append("... (diff truncated)")
+        diff_lines = trimmed
+    return "\n".join(diff_lines)
 
 
 @app.command()
@@ -74,16 +94,24 @@ def list_targets(target: Path = typer.Option(Path("."), "--target", "-t", help="
 def bake(
     name: str = typer.Argument("default", help="Target name from agentic.bake.yaml."),
     target: Path = typer.Option(Path("."), "--target", "-t", help="Target repository path."),
-    dry_run: bool = typer.Option(False, "--dry-run", help="Show generated files without writing."),
+    plan: bool = typer.Option(False, "--plan", help="Show generated files without writing."),
+    detailed_diff: bool = typer.Option(
+        False,
+        "--detailed-diff",
+        help="Show full unified diffs in --plan (no truncation).",
+    ),
     write: bool = typer.Option(False, "--write", help="Write files to target repository."),
 ) -> None:
-    if not dry_run and not write:
-        dry_run = True
+    if not plan and not write:
+        plan = True
 
     target = target.resolve()
     config = load_bake_file(target / "agentic.bake.yaml")
     resolved = resolve_target(config, name)
     files = render_files(config, resolved)
+    lockfile = load_lockfile(target)
+    state_files = managed_files_by_path(lockfile)
+    planned_files = {str(rendered.destination): rendered for rendered in files}
 
     table = Table(title=f"Bake target: {name}")
     table.add_column("Action")
@@ -100,8 +128,71 @@ def bake(
 
     console.print(table)
 
-    if dry_run:
-        console.print("[yellow]Dry run only. Use --write to write files.[/yellow]")
+    state_table = Table(title="State Plan (.agentic-template.lock)")
+    state_table.add_column("Action")
+    state_table.add_column("Platform")
+    state_table.add_column("Path")
+    state_counts = {"create": 0, "update": 0, "delete": 0, "noop": 0}
+
+    for path, rendered in planned_files.items():
+        checksum = sha256_text(rendered.content)
+        previous = state_files.get(path)
+        if previous is None:
+            action = "create"
+        elif previous.get("checksum") == checksum:
+            action = "noop"
+        else:
+            action = "update"
+        state_counts[action] += 1
+        state_table.add_row(action, rendered.platform, path)
+
+    for path, previous in state_files.items():
+        if path in planned_files:
+            continue
+        state_counts["delete"] += 1
+        state_table.add_row("delete", str(previous.get("platform", "-")), path)
+
+    console.print(state_table)
+    console.print(
+        "Plan summary: "
+        f"{state_counts['create']} to create, "
+        f"{state_counts['update']} to update, "
+        f"{state_counts['delete']} to delete, "
+        f"{state_counts['noop']} unchanged in state."
+    )
+
+    if plan:
+        changed_paths: list[str] = []
+        for path, rendered in planned_files.items():
+            candidate = target / path
+            if not candidate.exists():
+                continue
+            if candidate.read_text(encoding="utf-8") != rendered.content:
+                changed_paths.append(path)
+
+        for path in changed_paths:
+            rendered = planned_files[path]
+            current_text = (target / path).read_text(encoding="utf-8")
+            max_lines = None if detailed_diff else MAX_DIFF_LINES_PER_FILE
+            diff_text = _unified_diff(
+                current_text,
+                rendered.content,
+                path,
+                max_lines=max_lines,
+            )
+            if diff_text:
+                console.print(f"\n[bold]Diff:[/bold] {path}")
+                console.print(diff_text)
+
+        deleted_paths = [path for path in state_files if path not in planned_files]
+        if deleted_paths:
+            console.print(
+                "\n[bold]State-only files (would be removed from state if applied):[/bold]"
+            )
+            for path in deleted_paths:
+                console.print(f"- {path}")
+
+        console.print("\n[yellow]Dry run only. Use --write to write files.[/yellow]")
         return
 
     for rendered in files:
