@@ -85,7 +85,10 @@ select = [
   "UP",
   "SIM",
 ]
-ignore = []
+ignore = [
+  "E501",
+  "B008",
+]
 
 [tool.ruff.format]
 quote-style = "double"
